@@ -1,13 +1,291 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Page</title>
-  <style>
-    body { margin:0; background:#000; display:flex; justify-content:center; align-items:center; height:100vh; }
-    img { max-width:100%; max-height:100vh; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tx6v</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #10130f;
+    --bg-2: #171b15;
+    --olive: #8a9a7e;
+    --olive-dim: #5c6b53;
+    --amber: #e8a33d;
+    --paper: #ece7d9;
+    --paper-dim: #9a9689;
+    --line: rgba(236,231,217,0.14);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html, body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+  }
+
+  body{
+    min-height:100vh;
+    background-image:
+      radial-gradient(ellipse 900px 600px at 78% 20%, rgba(138,154,126,0.10), transparent 60%),
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  }
+
+  .wrap{
+    max-width:1100px;
+    margin:0 auto;
+    padding:0 28px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:26px 0;
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--olive);
+    border-bottom:1px solid var(--line);
+    opacity:0;
+    animation:fadeDown .6s ease forwards;
+  }
+  .topbar .dot{
+    display:inline-block;
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--amber);
+    margin-right:8px;
+    box-shadow:0 0 8px var(--amber);
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+
+  .hero{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:56px;
+    padding:40px 0 20px;
+  }
+
+  .hero-text{
+    flex:1;
+    min-width:280px;
+    opacity:0;
+    animation:fadeUp .7s ease .15s forwards;
+  }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+    margin:0 0 18px;
+  }
+  .eyebrow::before{ content:"// "; color:var(--olive); }
+
+  h1{
+    font-family:'Bebas Neue', sans-serif;
+    font-size:clamp(64px, 11vw, 128px);
+    line-height:0.88;
+    letter-spacing:0.01em;
+    margin:0 0 6px;
+    color:var(--paper);
+  }
+  h1 span{
+    color:var(--amber);
+  }
+
+  .tagline{
+    font-size:16px;
+    line-height:1.6;
+    color:var(--paper-dim);
+    max-width:420px;
+    margin:18px 0 34px;
+  }
+
+  .links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+
+  .link-chip{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:13px 20px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    text-decoration:none;
+    color:var(--paper);
+    font-size:14.5px;
+    font-weight:500;
+    background:rgba(236,231,217,0.02);
+    transition:border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  .link-chip:hover{
+    border-color:var(--olive);
+    background:rgba(138,154,126,0.10);
+    transform:translateY(-2px);
+  }
+  .link-chip svg{ width:17px; height:17px; flex-shrink:0; }
+  .link-chip .handle{ color:var(--paper-dim); font-family:'Space Mono', monospace; font-size:12.5px; }
+
+  .link-chip.twitch:hover{ border-color:#9146FF; background:rgba(145,70,255,0.12); }
+  .link-chip.tiktok:hover{ border-color:#e8e8e8; }
+  .link-chip.youtube:hover{ border-color:#FF3B3B; background:rgba(255,59,59,0.10); }
+  .link-chip.instagram:hover{ border-color:var(--amber); background:rgba(232,163,61,0.10); }
+
+  .portrait-frame{
+    position:relative;
+    flex-shrink:0;
+    width:min(340px, 40vw);
+    opacity:0;
+    animation:fadeIn 1s ease .3s forwards;
+  }
+  .portrait-inner{
+    position:relative;
+    aspect-ratio: 3/4;
+    overflow:hidden;
+    border-radius:2px;
+  }
+  .portrait-inner img{
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position: 50% 20%;
+    filter:saturate(1.05) contrast(1.03);
+    display:block;
+  }
+  .portrait-inner::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 55%, rgba(16,19,15,0.85) 100%);
+  }
+
+  .corner{
+    position:absolute;
+    width:22px; height:22px;
+    border:2px solid var(--olive);
+  }
+  .corner.tl{ top:-8px; left:-8px; border-right:none; border-bottom:none; }
+  .corner.tr{ top:-8px; right:-8px; border-left:none; border-bottom:none; }
+  .corner.bl{ bottom:-8px; left:-8px; border-right:none; border-top:none; }
+  .corner.br{ bottom:-8px; right:-8px; border-left:none; border-top:none; }
+
+  .tag-label{
+    position:absolute;
+    bottom:14px; left:14px; right:14px;
+    display:flex;
+    justify-content:space-between;
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    color:var(--paper);
+  }
+  .tag-label .status{ color:var(--amber); }
+
+  .footer{
+    padding:24px 0 30px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color:var(--paper-dim);
+    opacity:0;
+    animation:fadeUp .6s ease .5s forwards;
+  }
+
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes fadeDown{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+  @media (max-width: 720px){
+    .hero{ flex-direction:column-reverse; padding-top:20px; gap:32px; }
+    .portrait-frame{ width:min(280px, 62vw); }
+    h1{ font-size:clamp(52px, 15vw, 80px); }
+    .links{ justify-content:flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; }
+    .topbar, .hero-text, .portrait-frame, .footer{ opacity:1; }
+  }
+
+  a:focus-visible, .link-chip:focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:3px;
+  }
+</style>
 </head>
 <body>
-  <img src="kirky.jpg" alt="My picture">
+  <div class="wrap">
+
+    <div class="topbar">
+      <span><span class="dot"></span>ONLINE</span>
+      <span>PLAYER PROFILE</span>
+    </div>
+
+    <div class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">welcome to my page</p>
+        <h1>tx<span>6</span>v</h1>
+        <p class="tagline">Gaming, streams, and whatever else I'm building. Find me across these platforms 👇</p>
+
+        <div class="links">
+          <a class="link-chip twitch" href="https://www.twitch.tv/tx6v_" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 2 2 6.5V19h5.5V22l3-3H14l5-5V2H4zm15.5 12.5-3 3h-4l-2.5 2.5v-2.5H6.5V4h13v10.5z"/><path d="M15.5 6.5H17v5h-1.5v-5zm-4.5 0h1.5v5H11v-5z"/></svg>
+            Twitch <span class="handle">tx6v_</span>
+          </a>
+          <a class="link-chip youtube" href="https://www.youtube.com/@tx6vv" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 12s0-3.4.4-4.9a2.8 2.8 0 0 1 2-2C6 4.6 12 4.6 12 4.6s6 0 7.6.5a2.8 2.8 0 0 1 2 2C22 8.6 22 12 22 12s0 3.4-.4 4.9a2.8 2.8 0 0 1-2 2c-1.6.5-7.6.5-7.6.5s-6 0-7.6-.5a2.8 2.8 0 0 1-2-2C2 15.4 2 12 2 12z"/><path d="M10 9v6l5-3-5-3z" fill="var(--bg)"/></svg>
+            YouTube <span class="handle">tx6vv</span>
+          </a>
+          <a class="link-chip tiktok" href="https://www.tiktok.com/@tx6vv" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8c-.7-.8-1.1-1.8-1.1-2.9h-3v13.4a2.6 2.6 0 1 1-1.8-2.5v-3.1a5.6 5.6 0 1 0 4.8 5.6V9.3a6.7 6.7 0 0 0 4 1.3V7.6a3.9 3.9 0 0 1-2.9-1.8z"/></svg>
+            TikTok <span class="handle">@tx6vv</span>
+          </a>
+          <a class="link-chip instagram" href="https://www.instagram.com/_nas_1000_/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            Instagram <span class="handle">_nas_1000_</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="portrait-frame">
+        <div class="portrait-inner">
+          <img src="kirky.jpg" alt="tx6v">
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+          <div class="tag-label">
+            <span>ID // tx6v</span>
+            <span class="status">● LIVE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>tx6v.github.io</span>
+      <span>built with too much free time and ALOT of Cancer Treatment Drugs</span>
+    </div>
+
+  </div>
 </body>
 </html>
