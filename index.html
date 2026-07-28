@@ -9,14 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #10130f;
-    --bg-2: #171b15;
-    --olive: #8a9a7e;
-    --olive-dim: #5c6b53;
-    --amber: #e8a33d;
-    --paper: #ece7d9;
-    --paper-dim: #9a9689;
-    --line: rgba(236,231,217,0.14);
+    --bg: #1a0f16;
+    --bg-2: #24141d;
+    --olive: #ff8fb1;
+    --olive-dim: #c15c82;
+    --amber: #ff5c98;
+    --paper: #ffe9f2;
+    --paper-dim: #d9a9be;
+    --line: rgba(255,233,242,0.14);
   }
 
   *{ box-sizing:border-box; }
@@ -33,7 +33,8 @@
   body{
     min-height:100vh;
     background-image:
-      radial-gradient(ellipse 900px 600px at 78% 20%, rgba(138,154,126,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 78% 20%, rgba(255,143,177,0.14), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 10% 80%, rgba(255,92,152,0.10), transparent 60%),
       repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
   }
 
@@ -230,9 +231,91 @@
     outline:2px solid var(--amber);
     outline-offset:3px;
   }
+
+  /* ---- Falling petals ---- */
+  #petal-field{
+    position:fixed;
+    inset:0;
+    width:100vw;
+    height:100vh;
+    pointer-events:none;
+    z-index:5;
+    overflow:hidden;
+  }
+  .petal{
+    position:absolute;
+    top:-40px;
+    will-change:transform, opacity;
+    animation-name:petal-fall, petal-sway;
+    animation-timing-function:linear, ease-in-out;
+    animation-iteration-count:infinite, infinite;
+    opacity:0.85;
+  }
+  .petal svg{ display:block; }
+
+  @keyframes petal-fall{
+    from{ transform:translateY(-10vh) rotate(0deg); }
+    to{ transform:translateY(110vh) rotate(360deg); }
+  }
+  @keyframes petal-sway{
+    0%, 100%{ margin-left:0px; }
+    50%{ margin-left:40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    #petal-field{ display:none; }
+  }
+
+  /* ---- Music toggle ---- */
+  #music-toggle{
+    position:fixed;
+    bottom:22px;
+    right:22px;
+    z-index:20;
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:rgba(36,20,29,0.75);
+    backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:var(--paper);
+    transition:border-color .2s ease, background .2s ease, transform .2s ease;
+  }
+  #music-toggle:hover{
+    border-color:var(--amber);
+    background:rgba(255,92,152,0.18);
+    transform:translateY(-2px);
+  }
+  #music-toggle svg{ width:20px; height:20px; }
+  #music-toggle.playing svg .bar{
+    animation:bar-bounce 0.9s ease-in-out infinite;
+    transform-origin:bottom;
+  }
+  #music-toggle.playing svg .bar:nth-child(2){ animation-delay:0.15s; }
+  #music-toggle.playing svg .bar:nth-child(3){ animation-delay:0.3s; }
+  @keyframes bar-bounce{
+    0%,100%{ transform:scaleY(0.4); }
+    50%{ transform:scaleY(1); }
+  }
 </style>
 </head>
 <body>
+
+  <div id="petal-field"></div>
+
+  <button id="music-toggle" aria-label="Play music" title="Play music">
+    <svg viewBox="0 0 24 24" fill="none">
+      <rect class="bar" x="4" y="9" width="3" height="6" rx="1.5" fill="currentColor"/>
+      <rect class="bar" x="10.5" y="5" width="3" height="14" rx="1.5" fill="currentColor"/>
+      <rect class="bar" x="17" y="9" width="3" height="6" rx="1.5" fill="currentColor"/>
+    </svg>
+  </button>
+  <audio id="bg-music" src="music.mp3" loop preload="none"></audio>
+
   <div class="wrap">
 
 <div class="topbar">
@@ -257,7 +340,7 @@
           </a>
           <a class="link-chip tiktok" href="https://www.tiktok.com/@tx6vv" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8c-.7-.8-1.1-1.8-1.1-2.9h-3v13.4a2.6 2.6 0 1 1-1.8-2.5v-3.1a5.6 5.6 0 1 0 4.8 5.6V9.3a6.7 6.7 0 0 0 4 1.3V7.6a3.9 3.9 0 0 1-2.9-1.8z"/></svg>
-            TikTok <span class="handle">@tx6vv</span>
+            TikTok <span class="handle">tx6vv</span>
           </a>
           <a class="link-chip instagram" href="https://www.instagram.com/_nas_1000_/" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
@@ -302,6 +385,69 @@
 
   updateViews();
   setInterval(updateViews, 3000);
+
+  // ---- Falling petals ----
+  (function(){
+    const field = document.getElementById('petal-field');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    const petalSVG = (fill) => `
+      <svg width="18" height="18" viewBox="0 0 18 18">
+        <path d="M9 0 C13 3 18 6 9 18 C0 6 5 3 9 0 Z" fill="${fill}"/>
+      </svg>`;
+    const colors = ['#ff8fb1', '#ff5c98', '#ffc2d9', '#ff9fc3'];
+
+    function spawnPetal(){
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      const size = 12 + Math.random() * 14;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      petal.innerHTML = petalSVG(color);
+      petal.style.width = size + 'px';
+      petal.style.left = Math.random() * 100 + 'vw';
+
+      const fallDuration = 8 + Math.random() * 7;
+      const swayDuration = 2.5 + Math.random() * 2;
+      petal.style.animationDuration = `${fallDuration}s, ${swayDuration}s`;
+      petal.style.animationDelay = `0s, ${Math.random() * swayDuration}s`;
+      petal.style.opacity = 0.5 + Math.random() * 0.4;
+
+      field.appendChild(petal);
+      setTimeout(() => petal.remove(), fallDuration * 1000 + 200);
+    }
+
+    // seed an initial batch so it doesn't feel empty on load
+    for (let i = 0; i < 14; i++){
+      setTimeout(spawnPetal, i * 300);
+    }
+    setInterval(spawnPetal, 700);
+  })();
+
+  // ---- Music toggle ----
+  (function(){
+    const btn = document.getElementById('music-toggle');
+    const audio = document.getElementById('bg-music');
+    let playing = false;
+
+    btn.addEventListener('click', () => {
+      if (!playing){
+        audio.play().then(() => {
+          playing = true;
+          btn.classList.add('playing');
+          btn.setAttribute('aria-label', 'Pause music');
+        }).catch(() => {
+          // Likely missing music.mp3 file, or browser blocked it
+          alert("Couldn't play music — make sure a file named music.mp3 is in the same folder as this page.");
+        });
+      } else {
+        audio.pause();
+        playing = false;
+        btn.classList.remove('playing');
+        btn.setAttribute('aria-label', 'Play music');
+      }
+    });
+  })();
 </script>
 </body>
 </html>
