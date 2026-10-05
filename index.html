@@ -482,15 +482,15 @@
   <div class="wrap">
 
     <div class="topbar">
-      <span><span class="dot"></span>SYSTEM ONLINE</span>
+      <span><span class="dot"></span>ONLINE</span>
       <span>PROFILE VIEWS // <span id="viewCount">0</span></span>
     </div>
 
     <div class="hero">
       <div class="hero-text">
-        <p class="eyebrow">welcome to my page</p>
+        <p class="eyebrow">Yo wsg</p>
         <h1>tx<span>6</span>v</h1>
-        <p class="tagline">Gaming, streams, and whatever else I'm building. Find me across these platforms 👇</p>
+        <p class="tagline">Gaming, streams, Occasional OF content and whatever else I'm building. Find me across these platforms 👇</p>
 
         <div class="links">
           <a class="link-chip twitch" href="https://www.twitch.tv/tx6v_" target="_blank" rel="noopener">
@@ -514,7 +514,7 @@
 
       <div class="portrait-frame">
         <div class="portrait-inner">
-          <img src="mangogyur-10102025-0001.jpeg" alt="tx6v portrait">
+          <img src="losp.jpeg" alt="tx6v portrait">
           <div class="corner tl"></div>
           <div class="corner tr"></div>
           <div class="corner bl"></div>
@@ -555,12 +555,9 @@
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduceMotion) return;
 
-      const colors = ['', 'cyan', 'magenta']; // empty string = default acid green
-
       function spawnDrop(){
         const drop = document.createElement('div');
         drop.className = 'acid-drop';
-        // random color variant (mostly green, some cyan/magenta)
         const colorRoll = Math.random();
         if (colorRoll < 0.15) drop.classList.add('cyan');
         else if (colorRoll < 0.25) drop.classList.add('magenta');
@@ -577,16 +574,13 @@
 
         field.appendChild(drop);
 
-        // remove after it finishes (duration + delay + buffer)
         setTimeout(() => drop.remove(), (duration + delay) * 1000 + 500);
       }
 
-      // seed initial drops
       for (let i = 0; i < 60; i++){
         setTimeout(spawnDrop, i * 60);
       }
 
-      // keep spawning
       setInterval(spawnDrop, 180);
     })();
 
