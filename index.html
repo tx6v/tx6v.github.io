@@ -3,310 +3,473 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>tx6v</title>
+<title>tx6v // ACID RAIN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #1a0f16;
-    --bg-2: #24141d;
-    --olive: #ff8fb1;
-    --olive-dim: #c15c82;
-    --amber: #ff5c98;
-    --paper: #ffe9f2;
-    --paper-dim: #d9a9be;
-    --line: rgba(255,233,242,0.14);
+    --bg: #07090c;
+    --bg-2: #0d1117;
+    --acid: #39ff14;
+    --acid-dim: #1a8c0a;
+    --cyan: #00f0ff;
+    --magenta: #ff00e5;
+    --paper: #e0ffe6;
+    --paper-dim: #6b8a6b;
+    --line: rgba(57, 255, 20, 0.18);
+    --glow: 0 0 12px rgba(57, 255, 20, 0.5), 0 0 30px rgba(57, 255, 20, 0.15);
   }
 
-  *{ box-sizing:border-box; }
+  *{ box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body{
-    margin:0;
-    padding:0;
-    background:var(--bg);
-    color:var(--paper);
-    font-family:'Inter', sans-serif;
-    overflow-x:hidden;
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
   }
 
   body{
-    min-height:100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-image:
-      radial-gradient(ellipse 900px 600px at 78% 20%, rgba(255,143,177,0.14), transparent 60%),
-      radial-gradient(ellipse 700px 500px at 10% 80%, rgba(255,92,152,0.10), transparent 60%),
-      repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+      radial-gradient(ellipse 900px 600px at 75% 15%, rgba(57,255,20,0.08), transparent 65%),
+      radial-gradient(ellipse 700px 500px at 15% 85%, rgba(0,240,255,0.06), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  /* ---- grid overlay ---- */
+  .grid-overlay{
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(57,255,20,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57,255,20,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ---- scanlines ---- */
+  .scanlines{
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.2) 0px,
+      rgba(0,0,0,0.2) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    z-index: 100;
+    mix-blend-mode: overlay;
+    opacity: 0.6;
+  }
+
+  /* ---- vignette ---- */
+  .vignette{
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    z-index: 90;
   }
 
   .wrap{
-    max-width:1100px;
-    margin:0 auto;
-    padding:0 28px;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 28px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
   }
 
+  /* ---- topbar ---- */
   .topbar{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:26px 0;
-    font-family:'Space Mono', monospace;
-    font-size:12px;
-    letter-spacing:0.08em;
-    color:var(--olive);
-    border-bottom:1px solid var(--line);
-    opacity:0;
-    animation:fadeDown .6s ease forwards;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--acid);
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    animation: fadeDown .6s ease forwards;
+    text-shadow: 0 0 8px rgba(57,255,20,0.3);
   }
   .topbar .dot{
-    display:inline-block;
-    width:7px; height:7px;
-    border-radius:50%;
-    background:var(--amber);
-    margin-right:8px;
-    box-shadow:0 0 8px var(--amber);
-    animation:pulse 1.8s ease-in-out infinite;
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--acid);
+    margin-right: 8px;
+    box-shadow: 0 0 10px var(--acid), 0 0 20px var(--acid);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  #viewCount{
+    font-weight: 700;
+    color: var(--cyan);
+    text-shadow: 0 0 8px rgba(0,240,255,0.5);
   }
 
+  /* ---- hero ---- */
   .hero{
-    flex:1;
-    display:flex;
-    align-items:center;
-    gap:56px;
-    padding:40px 0 20px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 56px;
+    padding: 30px 0 20px;
   }
 
   .hero-text{
-    flex:1;
-    min-width:280px;
-    opacity:0;
-    animation:fadeUp .7s ease .15s forwards;
+    flex: 1;
+    min-width: 280px;
+    opacity: 0;
+    animation: fadeUp .7s ease .15s forwards;
   }
 
   .eyebrow{
-    font-family:'Space Mono', monospace;
-    font-size:12.5px;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--paper-dim);
-    margin:0 0 18px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--paper-dim);
+    margin-bottom: 14px;
   }
-  .eyebrow::before{ content:"// "; color:var(--olive); }
+  .eyebrow::before{ content: "> "; color: var(--acid); }
 
   h1{
-    font-family:'Bebas Neue', sans-serif;
-    font-size:clamp(64px, 11vw, 128px);
-    line-height:0.88;
-    letter-spacing:0.01em;
-    margin:0 0 6px;
-    color:var(--paper);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: clamp(64px, 11vw, 120px);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    color: var(--paper);
+    text-shadow: 0 0 20px rgba(57,255,20,0.4), 0 0 60px rgba(57,255,20,0.15);
+    position: relative;
+    display: inline-block;
   }
   h1 span{
-    color:var(--amber);
+    color: var(--acid);
+    text-shadow: 0 0 20px var(--acid), 0 0 50px rgba(57,255,20,0.6);
+  }
+
+  /* subtle glitch on hover */
+  h1:hover{
+    animation: glitch 0.3s ease infinite;
+  }
+  @keyframes glitch{
+    0%, 100%{ transform: translate(0); }
+    20%{ transform: translate(-2px, 1px); }
+    40%{ transform: translate(2px, -1px); }
+    60%{ transform: translate(-1px, 2px); }
+    80%{ transform: translate(1px, -2px); }
   }
 
   .tagline{
-    font-size:16px;
-    line-height:1.6;
-    color:var(--paper-dim);
-    max-width:420px;
-    margin:18px 0 34px;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--paper-dim);
+    max-width: 440px;
+    margin: 18px 0 32px;
+    font-weight: 500;
   }
 
+  /* ---- links ---- */
   .links{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .link-chip{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:13px 20px;
-    border:1px solid var(--line);
-    border-radius:999px;
-    text-decoration:none;
-    color:var(--paper);
-    font-size:14.5px;
-    font-weight:500;
-    background:rgba(236,231,217,0.02);
-    transition:border-color .2s ease, background .2s ease, transform .2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border: 1px solid var(--line);
+    border-radius: 0 16px 0 16px;
+    text-decoration: none;
+    color: var(--paper);
+    font-size: 15px;
+    font-weight: 600;
+    background: rgba(13, 17, 23, 0.7);
+    backdrop-filter: blur(4px);
+    transition: all .25s cubic-bezier(0.2, 0.9, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.02em;
+  }
+  .link-chip::before{
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(57,255,20,0.08), transparent);
+    transition: left .5s ease;
+  }
+  .link-chip:hover::before{
+    left: 100%;
   }
   .link-chip:hover{
-    border-color:var(--olive);
-    background:rgba(138,154,126,0.10);
-    transform:translateY(-2px);
+    border-color: var(--acid);
+    background: rgba(57, 255, 20, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 0 20px rgba(57,255,20,0.2), inset 0 0 20px rgba(57,255,20,0.05);
+    border-radius: 16px 0 16px 0;
   }
-  .link-chip svg{ width:17px; height:17px; flex-shrink:0; }
-  .link-chip .handle{ color:var(--paper-dim); font-family:'Space Mono', monospace; font-size:12.5px; }
+  .link-chip svg{ width: 18px; height: 18px; flex-shrink: 0; }
+  .link-chip .handle{
+    color: var(--paper-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    margin-left: 4px;
+    transition: color .2s;
+  }
+  .link-chip:hover .handle{ color: var(--acid); }
 
-  .link-chip.twitch:hover{ border-color:#9146FF; background:rgba(145,70,255,0.12); }
-  .link-chip.tiktok:hover{ border-color:#e8e8e8; }
-  .link-chip.youtube:hover{ border-color:#FF3B3B; background:rgba(255,59,59,0.10); }
-  .link-chip.instagram:hover{ border-color:var(--amber); background:rgba(232,163,61,0.10); }
+  /* per-platform accent */
+  .link-chip.twitch:hover{ border-color: #9146FF; background: rgba(145,70,255,0.1); box-shadow: 0 0 20px rgba(145,70,255,0.25); }
+  .link-chip.youtube:hover{ border-color: #FF3B3B; background: rgba(255,59,59,0.1); box-shadow: 0 0 20px rgba(255,59,59,0.25); }
+  .link-chip.tiktok:hover{ border-color: #e8e8e8; background: rgba(232,232,232,0.08); box-shadow: 0 0 20px rgba(232,232,232,0.2); }
+  .link-chip.instagram:hover{ border-color: var(--magenta); background: rgba(255,0,229,0.1); box-shadow: 0 0 20px rgba(255,0,229,0.25); }
 
+  /* ---- portrait ---- */
   .portrait-frame{
-    position:relative;
-    flex-shrink:0;
-    width:min(340px, 40vw);
-    opacity:0;
-    animation:fadeIn 1s ease .3s forwards;
+    position: relative;
+    flex-shrink: 0;
+    width: min(340px, 40vw);
+    opacity: 0;
+    animation: fadeIn 1s ease .3s forwards;
+    filter: drop-shadow(0 0 30px rgba(57,255,20,0.15));
   }
   .portrait-inner{
-    position:relative;
+    position: relative;
     aspect-ratio: 3/4;
-    overflow:hidden;
-    border-radius:2px;
+    overflow: hidden;
+    border-radius: 2px;
+    border: 1px solid rgba(57, 255, 20, 0.3);
+    box-shadow: 0 0 20px rgba(57,255,20,0.1), inset 0 0 30px rgba(0,0,0,0.8);
   }
   .portrait-inner img{
-    width:100%; height:100%;
-    object-fit:cover;
+    width: 100%; height: 100%;
+    object-fit: cover;
     object-position: 50% 20%;
-    filter:saturate(1.05) contrast(1.03);
-    display:block;
+    filter: saturate(1.1) contrast(1.05) brightness(0.95);
+    display: block;
+    transition: transform .6s cubic-bezier(0.2, 0.9, 0.3, 1);
+  }
+  .portrait-frame:hover .portrait-inner img{
+    transform: scale(1.04);
   }
   .portrait-inner::after{
-    content:"";
-    position:absolute; inset:0;
-    background:linear-gradient(180deg, transparent 55%, rgba(16,19,15,0.85) 100%);
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(7,9,12,0.95) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* scanline effect on portrait */
+  .portrait-inner::before{
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.15) 0px,
+      rgba(0,0,0,0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.5;
   }
 
   .corner{
-    position:absolute;
-    width:22px; height:22px;
-    border:2px solid var(--olive);
+    position: absolute;
+    width: 22px; height: 22px;
+    border: 2px solid var(--acid);
+    z-index: 3;
+    filter: drop-shadow(0 0 6px rgba(57,255,20,0.8));
   }
-  .corner.tl{ top:-8px; left:-8px; border-right:none; border-bottom:none; }
-  .corner.tr{ top:-8px; right:-8px; border-left:none; border-bottom:none; }
-  .corner.bl{ bottom:-8px; left:-8px; border-right:none; border-top:none; }
-  .corner.br{ bottom:-8px; right:-8px; border-left:none; border-top:none; }
+  .corner.tl{ top: -8px; left: -8px; border-right: none; border-bottom: none; }
+  .corner.tr{ top: -8px; right: -8px; border-left: none; border-bottom: none; }
+  .corner.bl{ bottom: -8px; left: -8px; border-right: none; border-top: none; }
+  .corner.br{ bottom: -8px; right: -8px; border-left: none; border-top: none; }
 
   .tag-label{
-    position:absolute;
-    bottom:14px; left:14px; right:14px;
-    display:flex;
-    justify-content:space-between;
-    font-family:'Space Mono', monospace;
-    font-size:10.5px;
-    letter-spacing:0.05em;
-    color:var(--paper);
+    position: absolute;
+    bottom: 16px; left: 16px; right: 16px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--paper);
+    z-index: 3;
+    text-shadow: 0 0 8px rgba(0,0,0,0.9);
   }
-  .tag-label .status{ color:var(--amber); }
+  .tag-label .status{
+    color: var(--acid);
+    font-weight: 700;
+    animation: pulse 1.6s infinite;
+    text-shadow: 0 0 10px var(--acid);
+  }
 
+  /* ---- footer ---- */
   .footer{
-    padding:24px 0 30px;
-    border-top:1px solid var(--line);
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:10px;
-    font-family:'Space Mono', monospace;
-    font-size:11px;
-    color:var(--paper-dim);
-    opacity:0;
-    animation:fadeUp .6s ease .5s forwards;
+    padding: 20px 0 26px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--paper-dim);
+    opacity: 0;
+    animation: fadeUp .6s ease .5s forwards;
+  }
+  .footer span:last-child{
+    max-width: 60%;
+    text-align: right;
+    line-height: 1.4;
   }
 
-  @keyframes fadeUp{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
-  @keyframes fadeDown{ from{opacity:0; transform:translateY(-10px);} to{opacity:1; transform:translateY(0);} }
+  /* ---- animations ---- */
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes fadeDown{ from{opacity:0; transform:translateY(-12px);} to{opacity:1; transform:translateY(0);} }
   @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
-  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-  @media (max-width: 720px){
-    .hero{ flex-direction:column-reverse; padding-top:20px; gap:32px; }
-    .portrait-frame{ width:min(280px, 62vw); }
-    h1{ font-size:clamp(52px, 15vw, 80px); }
-    .links{ justify-content:flex-start; }
+  /* ---- acid rain ---- */
+  #acid-field{
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
   }
-
-  @media (prefers-reduced-motion: reduce){
-    *{ animation:none !important; }
-    .topbar, .hero-text, .portrait-frame, .footer{ opacity:1; }
+  .acid-drop{
+    position: absolute;
+    top: -120px;
+    width: 1.5px;
+    background: linear-gradient(to bottom, transparent, var(--acid), transparent);
+    animation: acid-fall linear infinite;
+    opacity: 0.8;
+    will-change: transform;
+    filter: drop-shadow(0 0 4px var(--acid));
   }
-
-  a:focus-visible, .link-chip:focus-visible{
-    outline:2px solid var(--amber);
-    outline-offset:3px;
+  .acid-drop.cyan{
+    background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+    filter: drop-shadow(0 0 4px var(--cyan));
   }
-
-  /* ---- Falling petals ---- */
-  #petal-field{
-    position:fixed;
-    inset:0;
-    width:100vw;
-    height:100vh;
-    pointer-events:none;
-    z-index:5;
-    overflow:hidden;
-  }
-  .petal{
-    position:absolute;
-    top:-40px;
-    will-change:transform, opacity;
-    animation-name:petal-fall, petal-sway;
-    animation-timing-function:linear, ease-in-out;
-    animation-iteration-count:infinite, infinite;
-    opacity:0.85;
-  }
-  .petal svg{ display:block; }
-
-  @keyframes petal-fall{
-    from{ transform:translateY(-10vh) rotate(0deg); }
-    to{ transform:translateY(110vh) rotate(360deg); }
-  }
-  @keyframes petal-sway{
-    0%, 100%{ margin-left:0px; }
-    50%{ margin-left:40px; }
+  .acid-drop.magenta{
+    background: linear-gradient(to bottom, transparent, var(--magenta), transparent);
+    filter: drop-shadow(0 0 4px var(--magenta));
   }
 
-  @media (prefers-reduced-motion: reduce){
-    #petal-field{ display:none; }
+  @keyframes acid-fall{
+    0%{ transform: translateY(0); }
+    100%{ transform: translateY(calc(100vh + 200px)); }
   }
 
-  /* ---- Music toggle ---- */
+  /* ---- music toggle ---- */
   #music-toggle{
-    position:fixed;
-    bottom:22px;
-    right:22px;
-    z-index:20;
-    width:52px;
-    height:52px;
-    border-radius:50%;
-    border:1px solid var(--line);
-    background:rgba(36,20,29,0.75);
-    backdrop-filter:blur(6px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    color:var(--paper);
-    transition:border-color .2s ease, background .2s ease, transform .2s ease;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 30;
+    width: 54px;
+    height: 54px;
+    border-radius: 0 16px 0 16px;
+    border: 1px solid var(--line);
+    background: rgba(13, 17, 23, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--acid);
+    transition: all .25s ease;
+    box-shadow: 0 0 20px rgba(57,255,20,0.1);
   }
   #music-toggle:hover{
-    border-color:var(--amber);
-    background:rgba(255,92,152,0.18);
-    transform:translateY(-2px);
+    border-color: var(--acid);
+    background: rgba(57, 255, 20, 0.15);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 30px rgba(57,255,20,0.3);
+    border-radius: 16px 0 16px 0;
   }
-  #music-toggle svg{ width:20px; height:20px; }
+  #music-toggle svg{ width: 22px; height: 22px; }
   #music-toggle.playing svg .bar{
-    animation:bar-bounce 0.9s ease-in-out infinite;
-    transform-origin:bottom;
+    animation: bar-bounce 0.9s ease-in-out infinite;
+    transform-origin: bottom;
   }
-  #music-toggle.playing svg .bar:nth-child(2){ animation-delay:0.15s; }
-  #music-toggle.playing svg .bar:nth-child(3){ animation-delay:0.3s; }
+  #music-toggle.playing svg .bar:nth-child(2){ animation-delay: 0.15s; }
+  #music-toggle.playing svg .bar:nth-child(3){ animation-delay: 0.3s; }
   @keyframes bar-bounce{
-    0%,100%{ transform:scaleY(0.4); }
-    50%{ transform:scaleY(1); }
+    0%,100%{ transform: scaleY(0.4); }
+    50%{ transform: scaleY(1); }
   }
+
+  /* ---- responsive ---- */
+  @media (max-width: 720px){
+    .wrap{ padding: 0 20px; }
+    .hero{ flex-direction: column-reverse; padding-top: 16px; gap: 28px; }
+    .portrait-frame{ width: min(280px, 70vw); }
+    h1{ font-size: clamp(52px, 15vw, 84px); }
+    .links{ justify-content: center; }
+    .hero-text{ text-align: center; }
+    .tagline{ margin-left: auto; margin-right: auto; }
+    .eyebrow{ text-align: center; }
+    .footer{ flex-direction: column; align-items: center; text-align: center; }
+    .footer span:last-child{ max-width: 100%; text-align: center; }
+    .topbar{ font-size: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+    .topbar, .hero-text, .portrait-frame, .footer{ opacity: 1; }
+    #acid-field{ display: none; }
+    .scanlines, .grid-overlay{ display: none; }
+  }
+
+  a:focus-visible, .link-chip:focus-visible, #music-toggle:focus-visible{
+    outline: 2px solid var(--acid);
+    outline-offset: 3px;
+  }
+
+  ::-webkit-scrollbar{ width: 8px; }
+  ::-webkit-scrollbar-track{ background: var(--bg); }
+  ::-webkit-scrollbar-thumb{ background: var(--acid-dim); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover{ background: var(--acid); }
 </style>
 </head>
 <body>
 
-  <div id="petal-field"></div>
+  <!-- overlays -->
+  <div class="grid-overlay"></div>
+  <div class="scanlines"></div>
+  <div class="vignette"></div>
 
+  <!-- acid rain -->
+  <div id="acid-field"></div>
+
+  <!-- music -->
   <button id="music-toggle" aria-label="Play music" title="Play music">
     <svg viewBox="0 0 24 24" fill="none">
       <rect class="bar" x="4" y="9" width="3" height="6" rx="1.5" fill="currentColor"/>
@@ -318,10 +481,10 @@
 
   <div class="wrap">
 
-<div class="topbar">
-  <span><span class="dot"></span>ONLINE</span>
-  <span>PROFILE VIEWS // <span id="viewCount">0</span></span>
-</div>
+    <div class="topbar">
+      <span><span class="dot"></span>SYSTEM ONLINE</span>
+      <span>PROFILE VIEWS // <span id="viewCount">0</span></span>
+    </div>
 
     <div class="hero">
       <div class="hero-text">
@@ -351,7 +514,7 @@
 
       <div class="portrait-frame">
         <div class="portrait-inner">
-          <img src="mangogyur-10102025-0001.jpeg" alt="tx6v">
+          <img src="mangogyur-10102025-0001.jpeg" alt="tx6v portrait">
           <div class="corner tl"></div>
           <div class="corner tr"></div>
           <div class="corner bl"></div>
@@ -370,85 +533,86 @@
     </div>
 
   </div>
+
   <script>
-  // Fake live profile views
-  let views = Math.floor(Math.random() * 400001) + 15000;
+    // ---- Fake live profile views ----
+    (function(){
+      let views = Math.floor(Math.random() * 400001) + 15000;
+      const counter = document.getElementById("viewCount");
 
-  const counter = document.getElementById("viewCount");
-
-  function updateViews() {
-    counter.textContent = views.toLocaleString();
-
-    // Random increase of 1–3 views
-    views += Math.floor(Math.random() * 3) + 1;
-  }
-
-  updateViews();
-  setInterval(updateViews, 3000);
-
-  // ---- Falling petals ----
-  (function(){
-    const field = document.getElementById('petal-field');
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
-
-    const petalSVG = (fill) => `
-      <svg width="18" height="18" viewBox="0 0 18 18">
-        <path d="M9 0 C13 3 18 6 9 18 C0 6 5 3 9 0 Z" fill="${fill}"/>
-      </svg>`;
-    const colors = ['#ff8fb1', '#ff5c98', '#ffc2d9', '#ff9fc3'];
-
-    function spawnPetal(){
-      const petal = document.createElement('div');
-      petal.className = 'petal';
-      const size = 12 + Math.random() * 14;
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      petal.innerHTML = petalSVG(color);
-      petal.style.width = size + 'px';
-      petal.style.left = Math.random() * 100 + 'vw';
-
-      const fallDuration = 8 + Math.random() * 7;
-      const swayDuration = 2.5 + Math.random() * 2;
-      petal.style.animationDuration = `${fallDuration}s, ${swayDuration}s`;
-      petal.style.animationDelay = `0s, ${Math.random() * swayDuration}s`;
-      petal.style.opacity = 0.5 + Math.random() * 0.4;
-
-      field.appendChild(petal);
-      setTimeout(() => petal.remove(), fallDuration * 1000 + 200);
-    }
-
-    // seed an initial batch so it doesn't feel empty on load
-    for (let i = 0; i < 14; i++){
-      setTimeout(spawnPetal, i * 300);
-    }
-    setInterval(spawnPetal, 700);
-  })();
-
-  // ---- Music toggle ----
-  (function(){
-    const btn = document.getElementById('music-toggle');
-    const audio = document.getElementById('bg-music');
-    let playing = false;
-
-    btn.addEventListener('click', () => {
-      if (!playing){
-        audio.play().then(() => {
-          playing = true;
-          btn.classList.add('playing');
-          btn.setAttribute('aria-label', 'Pause music');
-        }).catch(() => {
-          // Likely missing music.mp3 file, or browser blocked it
-          alert("Couldn't play music — make sure a file named music.mp3 is in the same folder as this page.");
-        });
-      } else {
-        audio.pause();
-        playing = false;
-        btn.classList.remove('playing');
-        btn.setAttribute('aria-label', 'Play music');
+      function updateViews() {
+        counter.textContent = views.toLocaleString();
+        views += Math.floor(Math.random() * 3) + 1;
       }
-    });
-  })();
-</script>
+
+      updateViews();
+      setInterval(updateViews, 3000);
+    })();
+
+    // ---- Acid Rain ----
+    (function(){
+      const field = document.getElementById('acid-field');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      const colors = ['', 'cyan', 'magenta']; // empty string = default acid green
+
+      function spawnDrop(){
+        const drop = document.createElement('div');
+        drop.className = 'acid-drop';
+        // random color variant (mostly green, some cyan/magenta)
+        const colorRoll = Math.random();
+        if (colorRoll < 0.15) drop.classList.add('cyan');
+        else if (colorRoll < 0.25) drop.classList.add('magenta');
+
+        const height = 40 + Math.random() * 120;
+        drop.style.height = height + 'px';
+        drop.style.left = Math.random() * 100 + 'vw';
+
+        const duration = 1.8 + Math.random() * 3.5;
+        const delay = Math.random() * 4;
+        drop.style.animationDuration = duration + 's';
+        drop.style.animationDelay = delay + 's';
+        drop.style.opacity = 0.4 + Math.random() * 0.6;
+
+        field.appendChild(drop);
+
+        // remove after it finishes (duration + delay + buffer)
+        setTimeout(() => drop.remove(), (duration + delay) * 1000 + 500);
+      }
+
+      // seed initial drops
+      for (let i = 0; i < 60; i++){
+        setTimeout(spawnDrop, i * 60);
+      }
+
+      // keep spawning
+      setInterval(spawnDrop, 180);
+    })();
+
+    // ---- Music toggle ----
+    (function(){
+      const btn = document.getElementById('music-toggle');
+      const audio = document.getElementById('bg-music');
+      let playing = false;
+
+      btn.addEventListener('click', () => {
+        if (!playing){
+          audio.play().then(() => {
+            playing = true;
+            btn.classList.add('playing');
+            btn.setAttribute('aria-label', 'Pause music');
+          }).catch(() => {
+            alert("Couldn't play music — make sure a file named music.mp3 is in the same folder as this page.");
+          });
+        } else {
+          audio.pause();
+          playing = false;
+          btn.classList.remove('playing');
+          btn.setAttribute('aria-label', 'Play music');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
-
